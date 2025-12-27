@@ -1,19 +1,42 @@
-import dbConnect from '@/lib/mongodb';
-import {Complaint} from '@/models/Complaints';
+import dbConnect from "@/lib/mongodb";
+import Complaint from "@/models/Complaints";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request, res: Response ) {
-  await dbConnect();
+export async function POST(req: NextRequest) {
+  try {
+    await dbConnect();
 
-  const {title, description, category, priority} = await req.json();
+    const { title, description, category, priority } = await req.json();
 
-  const newComplaint = new Complaint({
-    title,
-    description,
-    category,
-    priority
-  });
+    if (!title || !description || !category || !priority) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
 
-  await newComplaint.save();
+    const newComplaint = await Complaint.create({
+      title,
+      description,
+      category,
+      priority,
+      status: "Pending",
+      dateSubmitted: new Date(),
+    });
 
-  return Response.json({ message: 'Complaint registered successfully', complaint: newComplaint }, { status: 201 });
+    return NextResponse.json(
+      {
+        message: "Complaint registered successfully",
+        complaint: newComplaint,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating complaint:", error);
+
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
