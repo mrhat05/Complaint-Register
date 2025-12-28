@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -25,6 +26,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AdminRegisterPage() {
+  const router = useRouter();
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -42,11 +44,21 @@ export default function AdminRegisterPage() {
     setError(null);
 
     try {
-      // Placeholder – replace with /api/admin/register
-      console.log("Admin register:", values);
+        const res = await fetch("/api/admin/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+        });
 
-      // Example success:
-      // router.push("/admin/login");
+        if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Something went wrong");
+        }
+
+        router.push("/admin/login");
+
     } catch (err: any) {
       setError("Invalid secret key or registration failed");
     } finally {

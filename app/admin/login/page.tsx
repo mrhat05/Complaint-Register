@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -24,6 +25,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function AdminLoginPage() {
+  const router = useRouter();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -40,11 +42,20 @@ export default function AdminLoginPage() {
     setError(null);
 
     try {
-      // Placeholder – replace with /api/admin/login
-      console.log("Admin login:", values);
+        const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+        });
 
-      // Example success flow
-      // router.push("/admin/dashboard");
+        if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Something went wrong");
+        }
+
+        router.push("/admin/main/dashboard");
     } catch (err: any) {
       setError("Invalid admin credentials");
     } finally {
