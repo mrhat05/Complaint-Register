@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/mongodb";
 import Complaint from "@/models/Complaints";
 import { NextRequest, NextResponse } from "next/server";
+import { sendNewComplaintEmail } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,6 +23,13 @@ export async function POST(req: NextRequest) {
       priority,
       status: "Pending",
       dateSubmitted: new Date(),
+    });
+
+    await sendNewComplaintEmail({
+      title,
+      description,
+      category,
+      priority,
     });
 
     return NextResponse.json(
