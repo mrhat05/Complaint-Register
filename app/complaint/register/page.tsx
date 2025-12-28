@@ -96,9 +96,10 @@ async function onSubmit(values: ComplaintFormValues) {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="mb-10 text-4xl font-bold tracking-tight">
-        Register a Complaint
-      </h1>
+      <div className="border border-slate-200 rounded-xl shadow-sm bg-white/90 p-8">
+        <h1 className="mb-10 text-4xl font-bold tracking-tight">
+          Register a Complaint
+        </h1>
 
         <AlertDialog open={showAlertDialog} onOpenChange={setShowAlertDialog}>
             <AlertDialogContent>
@@ -109,20 +110,16 @@ async function onSubmit(values: ComplaintFormValues) {
                 </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                <AlertDialogAction>
-                    <Link href="/">
-                        Go to Home
-                    </Link>
-                </AlertDialogAction>
+                <AlertDialogAction> Go to Home</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8"
-        >
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
           <FormField
             control={form.control}
             name="title"
@@ -224,7 +221,8 @@ async function onSubmit(values: ComplaintFormValues) {
             )}
           </Button>
         </form>
-      </Form>
+        </Form>
+      </div>
     </main>
   );
 }
