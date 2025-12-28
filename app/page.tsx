@@ -12,8 +12,8 @@ export default function HomePage() {
           </h1>
 
           <nav className="flex gap-4">
-            <Link href="/admin/login">
-              <Button variant="outline" className="cursor-pointer">Admin Login</Button>
+            <Link href="/admin/register">
+              <Button variant="outline" className="cursor-pointer">Register as Admin</Button>
             </Link>
           </nav>
         </div>
@@ -32,9 +32,12 @@ export default function HomePage() {
         </p>
 
         <div className="mt-10 flex gap-4">
-          <div>
+          <div className="flex gap-2">
             <Link href="/complaint/register">
               <Button size="lg" className="cursor-pointer">Register a Complaint</Button>
+            </Link>
+            <Link href="/admin/login">
+              <Button variant={"secondary"} size="lg" className="cursor-pointer">Admin Login</Button>
             </Link>
           </div>
         </div>
