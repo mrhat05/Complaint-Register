@@ -110,7 +110,9 @@ async function onSubmit(values: ComplaintFormValues) {
                 </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                <AlertDialogAction> Go to Home</AlertDialogAction>
+                <AlertDialogAction asChild>
+                  <Link href="/">Go to Home</Link>
+                </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
