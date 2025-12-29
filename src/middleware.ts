@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (isAdmin && pathname.startsWith("/complaint/register")) {
+  if (isAdmin && (pathname.startsWith("/complaint/register") || pathname.startsWith("/admin/login") || pathname.startsWith("/admin/register"))) {
     return NextResponse.redirect(
       new URL("/admin/main/dashboard", req.url)
     );

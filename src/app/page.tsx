@@ -1,7 +1,11 @@
+
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
+import { getIsAdmin } from "@/src/lib/getIsAdmin";
 
-export default function HomePage() {
+
+export default async function HomePage() {
+  const isAdmin = await getIsAdmin();
   return (
     <main className="min-h-screen bg-white text-slate-900">
       {/* HEADER */}
@@ -12,9 +16,13 @@ export default function HomePage() {
           </h1>
 
           <nav className="flex gap-4">
-            <Link href="/admin/register">
-              <Button variant="outline" className="cursor-pointer">Register as Admin</Button>
-            </Link>
+            {isAdmin ? (
+              <></>
+            ) : (
+              <Link href="/admin/register">
+                <Button variant="outline" className="cursor-pointer">Register as Admin</Button>
+              </Link>
+            )}
           </nav>
         </div>
       </header>
@@ -33,12 +41,22 @@ export default function HomePage() {
 
         <div className="mt-10 flex gap-4">
           <div className="flex gap-2">
-            <Link href="/complaint/register">
-              <Button size="lg" className="cursor-pointer">Register a Complaint</Button>
-            </Link>
-            <Link href="/admin/login">
-              <Button variant={"secondary"} size="lg" className="cursor-pointer">Admin Login</Button>
-            </Link>
+            {isAdmin ? (
+                <Link href="/admin/main/dashboard">
+                  <Button size="lg" className="w-full cursor-pointer">
+                    Go to Admin Dashboard
+                  </Button>
+                </Link>
+            ) : (
+              <div>
+                <Link href="/complaint/register">
+                  <Button size="lg" className="cursor-pointer">Register a Complaint</Button>
+                </Link>
+                <Link href="/admin/login">
+                  <Button variant={"secondary"} size="lg" className="cursor-pointer">Admin Login</Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

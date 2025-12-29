@@ -10,15 +10,39 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function fetchAdminEmails(): Promise<string[]> {
+  const res = await fetch(
+    `${process.env.APP_URL}/api/admin/emails`,
+    {
+      method: "GET",
+      headers: {
+        Cookie: `admin_token=${process.env.INTERNAL_ADMIN_TOKEN ?? ""}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch admin emails");
+  }
+
+  const data = await res.json();
+  return data.emails || [];
+}
+
 export async function sendNewComplaintEmail(payload: {
   title: string;
   description: string;
   category: string;
   priority: string;
 }) {
+  const adminEmails = await fetchAdminEmails();
+
+  if (adminEmails.length === 0) return;
+
   await transporter.sendMail({
     from: `"Complaint System" <${process.env.SMTP_USER}>`,
-    to: process.env.ADMIN_EMAIL,
+    to: adminEmails,
     subject: "New Complaint Submitted",
     html: `
       <h2>New Complaint Submitted</h2>
@@ -31,17 +55,21 @@ export async function sendNewComplaintEmail(payload: {
   });
 }
 
+
 export async function sendStatusUpdateEmail(payload: {
   title: string;
   status: string;
 }) {
+  const adminEmails = await fetchAdminEmails();
+
+  if (adminEmails.length === 0) return;
+
   await transporter.sendMail({
     from: `"Complaint System" <${process.env.SMTP_USER}>`,
-    to: process.env.ADMIN_EMAIL,
+    to: adminEmails,
     subject: "Complaint Status Updated",
     html: `
       <h2>Complaint Status Updated</h2>
-      <p>The status of the following complaint has been updated:</p>
       <p><strong>Title:</strong> ${payload.title}</p>
       <p><strong>New Status:</strong> ${payload.status}</p>
       <p><strong>Updated On:</strong> ${new Date().toLocaleString()}</p>

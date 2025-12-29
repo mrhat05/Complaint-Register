@@ -98,7 +98,13 @@ export default function AdminDashboardPage() {
 
             <TableBody>
               {complaints.map((complaint) => (
-                <TableRow key={complaint._id}>
+                <TableRow
+                    key={complaint._id}
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={() =>
+                      router.push(`/admin/main/complaints/${complaint._id}`)
+                    }
+                  >
                   <TableCell className="font-medium">
                     {complaint.title}
                   </TableCell>
@@ -112,9 +118,17 @@ export default function AdminDashboardPage() {
                   <TableCell>{complaint.status}</TableCell>
 
                   <TableCell className="text-sm text-slate-600">
-                    {new Date(
-                      complaint.createdAt
-                    ).toLocaleDateString()}
+                    {/* Debug log for createdAt */}
+                    {/* Remove after debugging if not needed */}
+                    {(() => {
+                      if (!complaint.createdAt) return "N/A";
+                      const date = new Date(complaint.createdAt);
+                      if (isNaN(date.getTime())) {
+                        console.log("Invalid createdAt:", complaint.createdAt);
+                        return "N/A";
+                      }
+                      return date.toLocaleDateString();
+                    })()}
                   </TableCell>
                 </TableRow>
               ))}
