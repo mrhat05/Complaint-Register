@@ -60,7 +60,7 @@ export async function PATCH(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const cookiestore = await cookies();
@@ -87,7 +87,7 @@ export async function GET(
 
     await dbConnect();
 
-    const complaint = await Complaint.findById(params.id).lean();
+    const complaint = await Complaint.findById(context.params.id).lean();
 
     if (!complaint) {
       return NextResponse.json(
