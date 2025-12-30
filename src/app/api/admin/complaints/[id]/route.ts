@@ -60,10 +60,9 @@ export async function PATCH(
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } } | Promise<{ params: { id: string } }>
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { params } = await context;
     const cookiestore = await cookies();
     const token = cookiestore.get("admin_token")?.value;
 
