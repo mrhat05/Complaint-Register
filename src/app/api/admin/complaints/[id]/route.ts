@@ -58,10 +58,7 @@ export async function PATCH(
 }
 
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
     const cookiestore = await cookies();
     const token = cookiestore.get("admin_token")?.value;
@@ -87,7 +84,11 @@ export async function GET(
 
     await dbConnect();
 
-    const complaint = await Complaint.findById(context.params.id).lean();
+    // Extract id from the URL
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
+
+    const complaint = await Complaint.findById(id).lean();
 
     if (!complaint) {
       return NextResponse.json(
