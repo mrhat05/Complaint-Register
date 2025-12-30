@@ -5,10 +5,7 @@ import Complaint from "@/src/models/Complaints";
 import { sendStatusUpdateEmail } from "@/src/lib/mail";
 import { cookies } from "next/headers";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(req: NextRequest) {
   try {
     const { status } = await req.json();
 
@@ -21,8 +18,12 @@ export async function PATCH(
 
     await dbConnect();
 
+    // Extract id from the URL
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
+
     const complaint = await Complaint.findByIdAndUpdate(
-      params.id,
+      id,
       { status },
       { new: true }
     );
