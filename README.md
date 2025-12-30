@@ -1,36 +1,148 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📝 Complaint Register System
 
-## Getting Started
+A full-stack complaint management system built using **Next.js**, **TypeScript**, **MongoDB**, and **Nodemailer**.  
+The application allows users to submit complaints and enables administrators to manage and track them through a secure admin dashboard.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features
+
+### 👤 User (Public)
+- Submit a complaint with:
+  - Complaint Title
+  - Description
+  - Category
+  - Priority
+- Simple and clean complaint submission flow
+- No authentication required for users
+
+### 🛠 Admin
+- Secure admin authentication using **JWT (HTTP-only cookies)**
+- Admin dashboard to:
+  - View all complaints (paginated)
+  - View individual complaint details
+  - Update complaint status (`Pending`, `In Progress`, `Resolved`)
+- Email notifications:
+  - When a new complaint is submitted
+  - When a complaint status is updated
+- Admins are restricted from submitting complaints
+
+---
+
+## 🧱 Tech Stack
+
+- **Frontend**: Next.js (App Router), React, TypeScript
+- **UI**: Tailwind CSS, shadcn/ui
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB (Mongoose)
+- **Authentication**: JWT with HTTP-only cookies
+- **Email Service**: Nodemailer (SMTP)
+- **Package Manager**: pnpm
+
+---
+
+## 📁 Project Structure (Simplified)
+
+```txt
+app/
+├─ page.tsx
+├─ complaint/
+│  └─ register/
+│     ├─ page.tsx
+│     └─ ComplaintRegisterClient.tsx
+├─ admin/
+│  ├─ login/
+│  ├─ register/
+│  └─ main/
+│     ├─ dashboard/
+│     └─ complaints/
+│        └─ [id]/
+├─ api/
+│  ├─ complaints/
+│  └─ admin/
+│     ├─ login
+│     ├─ logout
+│     ├─ emails
+│     └─ complaints/
+│        └─ [id]
+lib/
+├─ mongodb.ts
+├─ mailer.ts
+└─ auth/
+models/
+├─ Complaint.ts
+└─ Admin.ts
+middleware.ts
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔐 Authentication & Authorization
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Admin authentication is handled using **JWT**
+- Token is stored in an **HTTP-only cookie**
+- Route protection is enforced using **Next.js middleware**
+- Role-based access control:
+  - **Admin routes** → accessible only by admins
+  - **Complaint submission** → accessible only by non-admin users
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📬 Email Notifications
 
-To learn more about Next.js, take a look at the following resources:
+Email notifications are implemented using **Nodemailer**:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 📧 **New complaint submission** → email sent to all admins
+- 📧 **Complaint status update** → email sent to all admins
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Admin email addresses are fetched through an internal API to maintain centralized authorization logic.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚙️ Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a `.env.local` file in the root directory:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+
+ADMIN_JWT_SECRET=your_jwt_secret_key
+
+SMTP_HOST=smtp.yourprovider.com
+SMTP_PORT=587
+SMTP_USER=your_email@example.com
+SMTP_PASS=your_email_password
+
+APP_URL=http://localhost:3000
+
+```
+
+## ▶️ Running the Application Locally
+```txt
+pnpm install
+pnpm dev
+
+// The application will be available at:
+
+http://localhost:3000
+```
+## Admin Testing (For Reviewers)
+
+- Register as an admin using the Admin Register page with this secret key (be0d817b9881e421)
+- Login as admin
+- Access the admin dashboard
+- View complaints, update statuses, and verify email notifications
+
+## 📦 Deployment
+
+- Deployed using Vercel
+- MongoDB Atlas used for the production database
+- SMTP credentials and environment variables configured via the Vercel dashboard
+  
+## 🧠 Design Decisions
+
+- Clear separation between user and admin roles
+- No unnecessary user authentication for complaint submission
+- Middleware-based route protection
+- Strict TypeScript and ESLint rules enforced
+- Clean and minimal UI focused on usability
+
